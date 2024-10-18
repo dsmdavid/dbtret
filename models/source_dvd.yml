@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: manual
+    database: raw
+    tables:
+      - name: acq_orders
+        columns:
+          - name: customer_id
+            data_type: number
+          - name: taxonomy_business_category_group
+            data_type: varchar
+
+      - name: activity
+        columns:
+          - name: customer_id
+            data_type: number
+          - name: subscription_id
+            data_type: number
+          - name: from_date
+            data_type: date
+          - name: to_date
+            data_type: date
+
+      - name: customers
+        columns:
+          - name: customer_id
+            data_type: number
+          - name: customer_country
+            data_type: varchar
+

@@ -1,0 +1,78 @@
+models:
+  - name: product_cohorted
+    description: Aggregated model to cohort_initial date, country, taxonomy acq and current date.
+    docs:
+      node_color: purple
+    columns:
+      - name: initial_dt
+        description: Initial date when the customer was first acquired. It is derived
+          from the customer_cohort table in the ANALYTICS.DBT_REPORT schema.
+        data_type: date
+      - name: customer_country
+        description: Country of the customer. It is of type STRING and is derived from
+          the customers table in the raw.manual schema. If the country
+          information is not available, it will be represented as
+          'unknown_country'.
+        data_type: varchar
+      - name: taxonomy_business_category_group
+        description: Business category group of the customer based on the taxonomy. It
+          is of type STRING and is derived from the acq_orders table in the
+          raw.manual schema. If the taxonomy business category group information
+          is not available, it will be represented as 'unknown_taxonomy'.
+        data_type: varchar
+      - name: current_dt
+        description: This column represents the calendar date for the row. It is in the
+          format YYYY-MM-DD and is of type DATE.
+        data_type: date
+      - name: cohorted_days
+        description: Days since initial cohort_date.
+        data_type: integer
+      - name: cohort_sk
+        description: This column is a unique identifier for each cohort. It is a
+          concatenation of the initial date when the customer was acquired, the
+          customer's country, and the business category group of the customer's
+          acquisition order.
+        data_type: varchar
+        data_tests:
+          - not_null
+      - name: product_cohorted_sk
+        description: surrogate key combining cohort_sk and current_date (the grain of the table)
+        data_tests:
+          - not_null
+          - unique
+      - name: current_cohort_size
+        description: This column represents the number of unique customers in the cohort
+          as of the current date. It is calculated by counting the distinct
+          customer IDs in the cohort. It is of type INTEGER.
+        data_type: number
+      - name: current_total_subscriptions
+        description: This column represents the total number of subscriptions for the
+          current cohort. It is calculated by summing the 'n_subscriptions'
+          field for all customers in the cohort. The data type of this column is
+          integer.
+        data_type: number
+      - name: customer_new
+        description: Number of new customers in the cohort. It is calculated by summing
+          1 if 'is_new' is true for a customer/
+        data_type: number
+      - name: customer_upsell
+        description: Number of customers who have upgraded their subscriptions in the
+          cohort. It is calculated by summing the 'is_upsell' field for all
+          customers in the cohort.
+        data_type: number
+      - name: customer_downsell
+        description: "Number of customers who have downgraded their subscription level
+          within the given cohort. It is calculated by summing up the
+          'is_downsell' flag for each customer in the cohort. "
+        data_type: number
+      - name: customer_churn
+        description: "This column represents the total number of customers who have
+          cancelled their subscription within the given cohort. It is calculated
+          by summing up the 'is_churn' flag for each customer in the cohort. "
+        data_type: number
+      - name: customer_reactivate
+        description: This column represents the total number of customers who have
+          reactivated their subscription within the given cohort. It is
+          calculated by summing up the 'is_reactivate' flag for each customer in
+          the cohort.
+        data_type: number
